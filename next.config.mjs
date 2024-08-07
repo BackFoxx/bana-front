@@ -1,4 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    output: 'standalone',
+    productionBrowserSourceMaps: false,
+    reactStrictMode: false,
+    swcMinify: true,
+    async rewrites() {
+        return [{
+            source: '/api/:path*',
+            destination: `${process.env.BACKEND_API}/api/:path*`
+        }];
+    },
+};
 
 export default nextConfig;

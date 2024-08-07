@@ -1,42 +1,89 @@
 'use client'
 
-import Search from "antd/lib/input/Search";
-import {useRef} from "react";
+import 'reflect-metadata';
+import {useEffect, useRef} from "react";
 import {proxy, useSnapshot} from "valtio";
-import {Button, Flex, Input} from "antd";
+import {AutoComplete, Button, Flex} from "antd";
 import styled from "@emotion/styled";
-import COLORS from "@/app/styles/Color";
+import COLORS from "@/styles/Color";
+import {container} from "tsyringe";
+import MenuRepository from "@/repository/MenuRepository";
+import AutoSearchResult from "@/entity/AutoSearchResult";
+import RecipeItemsCard from "@/component/RecipeItemsCard";
 
 type StateType = {
     keyword: string
+    autoSearchKeywords: AutoSearchResult[]
+    menuId: number | null
 }
+
+const MENU_REPOSITORY = container.resolve(MenuRepository)
 
 const SearchButton = styled(Button)`
     background-color: ${COLORS.headerBackground};
     border-color: ${COLORS.headerBackground};
 `
 
-const SearchInput = styled(Input)`
+const SearchInput = styled(AutoComplete)`
     border-color: ${COLORS.headerBackground};
+    width: 100%
 `
 
 export default function Page() {
-
-
-
     const state = useRef<StateType>(proxy({
-        keyword: ""
+        keyword: "",
+        autoSearchKeywords: [],
+        menuId: null
     })).current
 
     useSnapshot(state, {sync: true})
 
+    useEffect(() => {
+        if (state.keyword.trim().length < 1) {
+            return
+        }
+        MENU_REPOSITORY.autoSearch(state.keyword)
+            .then((keywords: AutoSearchResult[]) => {
+                state.autoSearchKeywords = keywords
+            })
+            .catch((e) => {
+                console.log(e)
+            });
+    }, [state.keyword]);
+
+    function getOptions() {
+        let options = state.autoSearchKeywords.map(searchKeyword => ({
+            label: searchKeyword.title,
+            value: searchKeyword.title
+        }));
+        console.log(options)
+        return options;
+    }
+
+    function onSearchSelected(keyword: string) {
+        state.menuId = state.autoSearchKeywords
+            .find(menu => menu.title === keyword)
+            ?.id ?? null
+    }
+
     return <>
-        <Flex gap={5}>
-            <SearchInput
-                placeholder="메뉴의 이름 또는 초성을 적어보세요"
-                size="large"
-            />
-            <SearchButton size={'large'}>검색</SearchButton>
+        <Flex gap={5} vertical>
+            <Flex gap={5}>
+                <SearchInput
+                    size={'large'}
+                    onChange={(keyword) => state.keyword = keyword}
+                    value={state.keyword}
+                    options={getOptions()}
+                    onSelect={onSearchSelected}
+                    placeholder="검색어"
+                    onSearch={(keyword) => onSearchSelected(keyword)}
+                />
+                <SearchButton
+                    size={'large'}
+                    onClick={() => state.keyword = ''}
+                >CLEAR</SearchButton>
+            </Flex>
+            <RecipeItemsCard menuId={state.menuId} />
         </Flex>
     </>
 };

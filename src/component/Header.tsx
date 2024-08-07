@@ -1,10 +1,11 @@
 'use client'
 
-import {Flex, Menu} from "antd";
+import {Button, Dropdown, Flex, Menu, MenuProps} from "antd";
 import React from "react";
 import {useRouter} from "next/navigation";
 import Paragraph from "antd/lib/typography/Paragraph";
-import COLORS from "@/app/styles/Color";
+import COLORS from "@/styles/Color";
+import {AndroidOutlined} from "@ant-design/icons";
 
 const headerStyle: React.CSSProperties = {
     height: 50,
@@ -28,7 +29,11 @@ export default function Header() {
 
     const router = useRouter();
 
-    return <Flex  style={headerStyle} justify={'end'}>
+    const items: MenuProps['items'] = [
+        { key: '1', label: <a target={"_blank"} onClick={() => router.push(`/admin/menu`)}>메뉴</a>  }
+    ]
+
+    return <Flex style={headerStyle} justify={'end'}>
         <div style={{flex: 1, display: 'flex', alignItems: 'center'}}>
             <Paragraph strong>레시피창고</Paragraph>
         </div>
@@ -41,5 +46,13 @@ export default function Header() {
                 backgroundColor: COLORS.headerBackground
             }}
         />
-    </Flex>
+        <Dropdown
+            menu={{items}}
+        >
+            <Button
+                onClick={e => e.preventDefault()}
+                icon={<AndroidOutlined/>}
+            />
+        </Dropdown>
+    </Flex>;
 };
