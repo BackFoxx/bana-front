@@ -66,6 +66,7 @@ export default function AdminMenuKeywordModal(props: PropsType) {
             .then((keyword: MenuKeyword) => {
                 message.success("키워드가 등록되었습니다.")
                 state.keywords.push(keyword)
+                state.keyword = ''
             })
             .catch((e) => {
                 console.log(e)

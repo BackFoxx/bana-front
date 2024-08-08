@@ -3,7 +3,7 @@
 import 'reflect-metadata';
 import {useEffect, useRef} from "react";
 import {proxy, useSnapshot} from "valtio";
-import {AutoComplete, Button, Flex} from "antd";
+import {AutoComplete, Button, Flex, Input, message} from "antd";
 import styled from "@emotion/styled";
 import COLORS from "@/styles/Color";
 import {container} from "tsyringe";
@@ -26,7 +26,7 @@ const SearchButton = styled(Button)`
 
 const SearchInput = styled(AutoComplete)`
     border-color: ${COLORS.headerBackground};
-    width: 100%
+    width: 100%;
 `
 
 export default function Page() {
@@ -61,23 +61,39 @@ export default function Page() {
     }
 
     function onSearchSelected(keyword: string) {
+        (document.activeElement as HTMLElement).blur();
+        state.menuId = state.autoSearchKeywords
+            .find(menu => menu.title === keyword)
+            ?.id ?? null;
+    }
+
+    function onSearchButtonClick(keyword: string) {
+        (document.activeElement as HTMLElement).blur();
         state.menuId = state.autoSearchKeywords
             .find(menu => menu.title === keyword)
             ?.id ?? null
+
+        if (!state.menuId) {
+            message.info("일치하는 메뉴가 없어요!")
+        }
     }
 
     return <>
         <Flex gap={5} vertical>
             <Flex gap={5}>
                 <SearchInput
-                    size={'large'}
                     onChange={(keyword) => state.keyword = keyword}
                     value={state.keyword}
                     options={getOptions()}
                     onSelect={onSearchSelected}
-                    placeholder="검색어"
-                    onSearch={(keyword) => onSearchSelected(keyword)}
-                />
+                >
+                    <Input.Search
+                        size="large"
+                        placeholder="검색어"
+                        onSearch={onSearchButtonClick}
+                        enterButton
+                    />
+                </SearchInput>
                 <SearchButton
                     size={'large'}
                     onClick={() => state.keyword = ''}

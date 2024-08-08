@@ -16,6 +16,14 @@ export default class MenuRecipeItemRepository {
     }
 
     public update(menuId: number, items: MenuRecipe[]) {
-        return this.axiosClient.patch(`/api/v1/menus/:menuId/recipes`, null, {items: items}, Null);
+        return this.axiosClient.patch(`/api/v1/menus/${menuId}/recipes`, null, {items: items}, Null);
+    }
+
+    public save(menuId: number, param: { amount: string; name: string }) {
+        return this.axiosClient.post(`/api/v1/menus/${menuId}/recipes`, null, param, MenuRecipe);
+    }
+
+    public delete(recipeId: number) {
+        return this.axiosClient.delete(`/api/v1/menus/recipes/${recipeId}`, null);
     }
 };

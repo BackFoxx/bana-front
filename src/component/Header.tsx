@@ -3,9 +3,8 @@
 import {Button, Dropdown, Flex, Menu, MenuProps} from "antd";
 import React from "react";
 import {useRouter} from "next/navigation";
-import Paragraph from "antd/lib/typography/Paragraph";
 import COLORS from "@/styles/Color";
-import {AndroidOutlined} from "@ant-design/icons";
+import {AndroidOutlined, MehOutlined} from "@ant-design/icons";
 
 const headerStyle: React.CSSProperties = {
     height: 50,
@@ -34,10 +33,9 @@ export default function Header() {
     ]
 
     return <Flex style={headerStyle} justify={'end'}>
-        <div style={{flex: 1, display: 'flex', alignItems: 'center'}}>
-            <Paragraph strong>레시피창고</Paragraph>
-        </div>
+        <MehOutlined onClick={() => router.push(`/`)} />
         <Menu
+            selectable={false}
             onClick={onMenuClick}
             mode="horizontal"
             items={menus}

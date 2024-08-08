@@ -59,6 +59,9 @@ export default function RecipeItemsCard(props: PropsType) {
                     <RecipeItemImageModal imagePath={item.imagePath} onCancel={() => state.imageModal = false} open={state.imageModal}/>
                 </Card>
             )}
+            {props.menuId !== null && state.items.length === 0 && <Card>
+                레시피가 등록되지 않았어요! 🤖
+            </Card>}
         </>
     );
 };
