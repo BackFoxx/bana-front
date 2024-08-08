@@ -1,4 +1,4 @@
-import {Button, Card, Divider, Flex, Input, message, Modal, ModalProps} from "antd";
+import {AutoComplete, Button, Card, Divider, Flex, Input, message, Modal, ModalProps} from "antd";
 import React, {useEffect, useRef} from "react";
 import {proxy, useSnapshot} from "valtio";
 import {container} from "tsyringe";
@@ -7,6 +7,7 @@ import MenuRecipe from "@/entity/MenuRecipe";
 import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
 import {DeleteOutlined, DragOutlined} from "@ant-design/icons";
 import COLORS from "@/styles/Color";
+import styled from "@emotion/styled";
 
 const MENU_RECIPE_REPOSITORY = container.resolve(MenuRecipeRepository)
 
@@ -16,14 +17,24 @@ type PropsType = ModalProps & {
 
 type StateType = {
     items: MenuRecipe[]
+    recipeNames: string[]
     keyword: string
     amount: string
 }
+
+const NameInput = styled(Input)`
+    font-size: 16px;
+`
+
+const AmountInput = styled(Input)`
+    width: 80%;
+`
 
 export default function AdminMenuRecipeModal(props: PropsType) {
 
     const state = useRef<StateType>(proxy({
         items: [],
+        recipeNames: [],
         keyword: '',
         amount: ''
     })).current
@@ -43,6 +54,16 @@ export default function AdminMenuRecipeModal(props: PropsType) {
             state.items = []
         }
     }, [props.menuId, props.open])
+
+    useEffect(() => {
+        MENU_RECIPE_REPOSITORY.getNames(state.keyword)
+            .then((names: string[]) => {
+                state.recipeNames = names
+            })
+            .catch((e) => {
+                console.log(e)
+            });
+    }, [state.keyword])
 
     function reorder(startIndex: number, endIndex: number): MenuRecipe[] {
         const result = Array.from(state.items);
@@ -104,13 +125,19 @@ export default function AdminMenuRecipeModal(props: PropsType) {
             .then((recipe: MenuRecipe) => {
                 message.success("레시피가 등록되었습니다.")
                 state.items.push(recipe)
+                state.amount = ''
+                state.keyword = ''
             })
             .catch((e) => {
                 console.log(e)
             });
+    }
 
-        state.amount = ''
-        state.keyword = ''
+    function getRecipeNames() {
+        return state.recipeNames.map(name => ({
+            label: name,
+            value: name
+        }))
     }
 
     return <Modal
@@ -122,8 +149,20 @@ export default function AdminMenuRecipeModal(props: PropsType) {
     >
         <Flex gap={5} vertical>
             <Flex gap={5}>
-                <Input value={state.keyword} size={'large'} placeholder={'이름'} onChange={e => state.keyword = e.target.value}/>
-                <Input value={state.amount} size={'large'} placeholder={'수량'} onChange={e => state.amount = e.target.value}/>
+                <AutoComplete
+                    style={{ width: '100%'}}
+                    options={getRecipeNames()}
+                    value={state.keyword}
+                    onSelect={(keyword) => state.keyword = keyword}
+                >
+                    <NameInput
+                        value={state.keyword}
+                        size={'large'}
+                        placeholder={'이름'}
+                        onChange={e => state.keyword = e.target.value}
+                    />
+                </AutoComplete>
+                <AmountInput value={state.amount} size={'large'} placeholder={'수량'} onChange={e => state.amount = e.target.value}/>
                 <Button size={'large'} onClick={saveRecipe} color={COLORS.headerBackground}>등록</Button>
             </Flex>
             <DragDropContext onDragEnd={onDragEnd}>

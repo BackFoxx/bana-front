@@ -26,4 +26,8 @@ export default class MenuRecipeItemRepository {
     public delete(recipeId: number) {
         return this.axiosClient.delete(`/api/v1/menus/recipes/${recipeId}`, null);
     }
+
+    public getNames(keyword: string): Promise<string[]> {
+        return this.axiosClient.get(`/api/v1/recipes/names`, {keyword: keyword}, String);
+    }
 };

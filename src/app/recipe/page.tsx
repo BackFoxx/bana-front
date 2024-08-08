@@ -52,12 +52,10 @@ export default function Page() {
     }, [state.keyword]);
 
     function getOptions() {
-        let options = state.autoSearchKeywords.map(searchKeyword => ({
+        return state.autoSearchKeywords.map(searchKeyword => ({
             label: searchKeyword.title,
             value: searchKeyword.title
         }));
-        console.log(options)
-        return options;
     }
 
     function onSearchSelected(keyword: string) {
