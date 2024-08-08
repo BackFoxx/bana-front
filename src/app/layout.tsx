@@ -3,6 +3,8 @@ import {Inter} from "next/font/google";
 import "./globals.css";
 import Header from "@/component/Header";
 import {Content} from "antd/lib/layout/layout";
+import {ConfigProvider} from "antd";
+import COLORS from "@/styles/Color";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -19,13 +21,21 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body className={inter.className}>
-        <Header />
-        <Content style={{
-            width:'80%',
-            margin: 'auto'
-        }}>
-            {children}
-        </Content>
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: COLORS.headerBackground,
+                }
+            }}
+        >
+            <Header/>
+            <Content style={{
+                width: '80%',
+                margin: 'auto'
+            }}>
+                {children}
+            </Content>
+        </ConfigProvider>
         </body>
         </html>
     );

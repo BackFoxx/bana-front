@@ -11,6 +11,7 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import {DeleteOutlined, ExperimentOutlined, SearchOutlined} from "@ant-design/icons";
 import AdminMenuKeywordModal from "@/component/admin/menu/AdminMenuKeywordModal";
 import COLORS from "@/styles/Color";
+import AdminMenuRecipeModal from "@/component/admin/menu/AdminMenuRecipeModal";
 
 const MENU_REPOSITORY = container.resolve(MenuRepository)
 
@@ -82,7 +83,7 @@ export default function Page() {
     return <>
         <Flex gap={5} vertical>
             <Flex gap={5}>
-                <Input value={state.menu.name} size={'large'} onChange={e => state.menu.name = e.target.value} />
+                <Input value={state.menu.name} size={'large'} onChange={e => state.menu.name = e.target.value}/>
                 <Button size={'large'} onClick={saveMenu} color={COLORS.headerBackground}>등록</Button>
             </Flex>
             {state.menus.map(menu => <Card key={menu.id}>
@@ -93,8 +94,11 @@ export default function Page() {
                                 state.modal.keywordModal = true
                                 state.modal.menuId = menu.id
                             }} icon={<SearchOutlined/>}/>
-                            <Button icon={<ExperimentOutlined/>}/>
-                            <Button onClick={() => deleteMenu(menu.id)} icon={<DeleteOutlined color={'red'}/>}/>
+                            <Button onClick={() => {
+                                state.modal.recipeModal = true
+                                state.modal.menuId = menu.id
+                            }} icon={<ExperimentOutlined/>}/>
+                            <Button onClick={() => deleteMenu(menu.id)} icon={<DeleteOutlined style={{color: 'red'}}/>}/>
                         </Flex>
                     </Flex>
                 </Card>
@@ -103,6 +107,11 @@ export default function Page() {
         <AdminMenuKeywordModal
             open={state.modal.keywordModal}
             onCancel={() => state.modal.keywordModal = false}
+            menuId={state.modal.menuId}
+        />
+        <AdminMenuRecipeModal
+            open={state.modal.recipeModal}
+            onCancel={() => state.modal.recipeModal = false}
             menuId={state.modal.menuId}
         />
     </>;

@@ -86,7 +86,7 @@ export default function AdminMenuKeywordModal(props: PropsType) {
                 <Flex justify={'space-between'}>
                     {keyword.keyword}
                     <Divider type="vertical"/>
-                    <Button onClick={(e) => deleteKeyword(e, keyword.id)} icon={<DeleteOutlined color={'red'}/>}/>
+                    <Button onClick={(e) => deleteKeyword(e, keyword.id)} icon={<DeleteOutlined style={{color: 'red'}}/>}/>
                 </Flex>
             </Card>)}
         </Flex>

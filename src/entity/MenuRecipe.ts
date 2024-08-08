@@ -12,4 +12,8 @@ export default class MenuRecipe {
         this.amount = amount;
         this.imagePath = imagePath;
     }
+
+    setOrder(index: number) {
+        this.order = index
+    }
 };
