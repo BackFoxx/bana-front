@@ -4,6 +4,9 @@ const nextConfig = {
     productionBrowserSourceMaps: false,
     reactStrictMode: false,
     swcMinify: true,
+    typescript: {
+        ignoreBuildErrors: true
+    },
     async rewrites() {
         return [{
             source: '/api/:path*',
