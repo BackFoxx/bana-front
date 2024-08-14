@@ -7,7 +7,7 @@ export default class Menu {
     public title = ''
     @Expose({ name: 'search_count' })
     public searchCount = 0
-    public image = ''
+    public image: string | null = null
 
     @Exclude({ toPlainOnly: true })
     @Transform(({ value }) => TimeFormatter.parseDateTime(value), { toClassOnly: true })

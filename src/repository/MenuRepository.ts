@@ -3,6 +3,7 @@ import AxiosClient from "@/repository/AxiosClient";
 import Menu from "@/entity/Menu";
 import AutoSearchResult from "@/entity/AutoSearchResult";
 import MenuKeyword from "@/entity/MenuKeyword";
+import Null from "@/entity/Null";
 
 @singleton()
 export default class MenuRepository {
@@ -42,5 +43,9 @@ export default class MenuRepository {
 
     public getMostSearchedMenus(): Promise<Menu[]> {
         return this.axiosClient.get<Menu[]>(`/api/v1/menus/search_count`, null, Menu)
+    }
+
+    public updateMenuImage(menuId: number, imageUrl: string) {
+        return this.axiosClient.patch(`/api/v1/menus/${menuId}/image`, null, {image: imageUrl}, Null);
     }
 };
