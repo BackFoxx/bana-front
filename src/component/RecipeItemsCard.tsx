@@ -1,5 +1,5 @@
-import {Button, Card, Divider, Flex} from "antd";
-import {FileImageOutlined} from "@ant-design/icons";
+import {Avatar, Button, Card, Divider, Flex, Segmented} from "antd";
+import {FileImageOutlined, MoonOutlined, SunOutlined} from "@ant-design/icons";
 import styled from "@emotion/styled";
 import RecipeItemImageModal from "@/component/RecipeItemImageModal";
 import {useEffect, useRef} from "react";
@@ -14,6 +14,7 @@ type PropsType = {
 
 type StateType = {
     imageModal: boolean
+    temperature: string
     items: MenuRecipe[]
 }
 
@@ -23,9 +24,13 @@ const ImageButton = styled(Button)`
 
 const MENU_RECIPE_REPOSITORY = container.resolve(MenuRecipeRepository)
 
+const TEMPERATURE_ICE = 'ICE';
+const TEMPERATURE_HOT = 'HOT';
+
 export default function RecipeItemsCard(props: PropsType) {
     const state = useRef<StateType>(proxy({
         imageModal: false,
+        temperature: TEMPERATURE_ICE,
         items: [],
     })).current
 
@@ -33,7 +38,7 @@ export default function RecipeItemsCard(props: PropsType) {
 
     useEffect(() => {
         if (props.menuId) {
-            MENU_RECIPE_REPOSITORY.getItems(props.menuId, "ICE")
+            MENU_RECIPE_REPOSITORY.getItems(props.menuId, state.temperature, true)
                 .then((items: MenuRecipe[]) => {
                     state.items = items
                 })
@@ -43,10 +48,43 @@ export default function RecipeItemsCard(props: PropsType) {
         } else {
             state.items = []
         }
-    }, [props.menuId])
+    }, [props.menuId, state.temperature])
 
     return (
         <>
+            <Segmented
+                value={state.temperature}
+                onChange={(temperature: string) => state.temperature = temperature}
+                options={[
+                    {
+                        label: (
+                            <Flex gap={10} align={'center'} justify={'center'}>
+                                <Avatar
+                                    style={{
+                                        backgroundColor: '#5fb6ff',
+                                    }}
+                                    icon={<MoonOutlined/>}
+                                />
+                            </Flex>
+                        ),
+                        value: TEMPERATURE_ICE,
+                    },
+                    {
+                        label: (
+                            <Flex gap={10} align={'center'} justify={'center'}>
+                                <Avatar
+                                    style={{
+                                        backgroundColor: '#f56a00',
+                                    }}
+                                    icon={<SunOutlined/>}
+                                />
+                            </Flex>
+                        ),
+                        value: TEMPERATURE_HOT,
+                    },
+                ]}
+                block
+            />
             {state.items.map(item => <Card key={item.id}>
                     <Flex justify={'space-between'}>
                         <Flex>
@@ -56,7 +94,8 @@ export default function RecipeItemsCard(props: PropsType) {
                         </Flex>
                         <ImageButton onClick={() => state.imageModal = true} icon={<FileImageOutlined/>}/>
                     </Flex>
-                    <RecipeItemImageModal imagePath={item.imagePath} onCancel={() => state.imageModal = false} open={state.imageModal}/>
+                    <RecipeItemImageModal imagePath={item.imagePath} onCancel={() => state.imageModal = false}
+                                          open={state.imageModal}/>
                 </Card>
             )}
             {props.menuId !== null && state.items.length === 0 && <Card>

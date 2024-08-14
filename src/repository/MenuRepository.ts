@@ -39,4 +39,8 @@ export default class MenuRepository {
     public delete(menuId: number) {
         return this.axiosClient.delete(`/api/v1/menus/${menuId}`, null);
     }
+
+    public getMostSearchedMenus(): Promise<Menu[]> {
+        return this.axiosClient.get<Menu[]>(`/api/v1/menus/search_count`, null, Menu)
+    }
 };

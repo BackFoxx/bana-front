@@ -10,6 +10,7 @@ import {container} from "tsyringe";
 import MenuRepository from "@/repository/MenuRepository";
 import AutoSearchResult from "@/entity/AutoSearchResult";
 import RecipeItemsCard from "@/component/RecipeItemsCard";
+import TopSearchMenuCard from "@/component/TopSearchMenuCard";
 
 type StateType = {
     keyword: string
@@ -76,6 +77,12 @@ export default function Page() {
         }
     }
 
+    function clear() {
+        state.menuId = null
+        state.keyword = ''
+        state.autoSearchKeywords = []
+    }
+
     return <>
         <Flex gap={5} vertical>
             <Flex gap={5}>
@@ -94,10 +101,11 @@ export default function Page() {
                 </SearchInput>
                 <SearchButton
                     size={'large'}
-                    onClick={() => state.keyword = ''}
+                    onClick={clear}
                 >CLEAR</SearchButton>
             </Flex>
             <RecipeItemsCard menuId={state.menuId} />
+            {state.menuId === null && <TopSearchMenuCard onMenuClick={(menuId => state.menuId = menuId)} />}
         </Flex>
     </>
 };

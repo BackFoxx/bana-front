@@ -24,6 +24,7 @@ type StateType = {
         keywordModal: boolean
         recipeModal: boolean
         menuId: number | null
+        menuName: string | null
     }
 }
 
@@ -36,7 +37,8 @@ export default function Page() {
         modal: {
             keywordModal: false,
             recipeModal: false,
-            menuId: null
+            menuId: null,
+            menuName: null
         }
     })).current
 
@@ -93,10 +95,12 @@ export default function Page() {
                             <Button onClick={() => {
                                 state.modal.keywordModal = true
                                 state.modal.menuId = menu.id
+                                state.modal.menuName = menu.title
                             }} icon={<SearchOutlined/>}/>
                             <Button onClick={() => {
                                 state.modal.recipeModal = true
                                 state.modal.menuId = menu.id
+                                state.modal.menuName = menu.title
                             }} icon={<ExperimentOutlined/>}/>
                             <Button onClick={() => deleteMenu(menu.id)} icon={<DeleteOutlined style={{color: 'red'}}/>}/>
                         </Flex>
@@ -112,6 +116,7 @@ export default function Page() {
         <AdminMenuRecipeModal
             open={state.modal.recipeModal}
             onCancel={() => state.modal.recipeModal = false}
+            menuName={state.modal.menuName}
             menuId={state.modal.menuId}
         />
     </>;

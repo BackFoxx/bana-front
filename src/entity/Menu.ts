@@ -1,10 +1,11 @@
 import {LocalDateTime} from "@js-joda/core";
-import {Exclude, Transform} from "class-transformer";
+import {Exclude, Expose, Transform} from "class-transformer";
 import TimeFormatter from "@/util/TimeFormatter";
 
 export default class Menu {
     public id = 0
     public title = ''
+    @Expose({ name: 'search_count' })
     public searchCount = 0
     public image = ''
 

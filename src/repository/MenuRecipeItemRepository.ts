@@ -11,15 +11,15 @@ export default class MenuRecipeItemRepository {
         this.axiosClient = axiosClient;
     }
 
-    public getItems(menuId: number, temperature: string): Promise<MenuRecipe[]> {
-        return this.axiosClient.get(`/api/v1/menus/${menuId}/recipes`, {temperature: temperature}, MenuRecipe);
+    public getItems(menuId: number, temperature: string, count: boolean = false): Promise<MenuRecipe[]> {
+        return this.axiosClient.get(`/api/v1/menus/${menuId}/recipes`, {temperature: temperature, count: count}, MenuRecipe);
     }
 
     public update(menuId: number, items: MenuRecipe[]) {
         return this.axiosClient.patch(`/api/v1/menus/${menuId}/recipes`, null, {items: items}, Null);
     }
 
-    public save(menuId: number, param: { amount: string; name: string }) {
+    public save(menuId: number, param: { amount: string; name: string, temperature: string }) {
         return this.axiosClient.post(`/api/v1/menus/${menuId}/recipes`, null, param, MenuRecipe);
     }
 

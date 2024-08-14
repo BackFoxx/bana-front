@@ -1,11 +1,11 @@
-import {AutoComplete, Button, Card, Divider, Flex, Input, message, Modal, ModalProps} from "antd";
+import {AutoComplete, Avatar, Button, Card, Divider, Flex, Input, message, Modal, ModalProps, Segmented} from "antd";
 import React, {useEffect, useRef} from "react";
 import {proxy, useSnapshot} from "valtio";
 import {container} from "tsyringe";
 import MenuRecipeRepository from "@/repository/MenuRecipeItemRepository";
 import MenuRecipe from "@/entity/MenuRecipe";
 import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
-import {DeleteOutlined, DragOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DragOutlined, MoonOutlined, SunOutlined} from "@ant-design/icons";
 import COLORS from "@/styles/Color";
 import styled from "@emotion/styled";
 
@@ -13,6 +13,7 @@ const MENU_RECIPE_REPOSITORY = container.resolve(MenuRecipeRepository)
 
 type PropsType = ModalProps & {
     menuId: number | null
+    menuName: string | null
 }
 
 type StateType = {
@@ -20,6 +21,7 @@ type StateType = {
     recipeNames: string[]
     keyword: string
     amount: string
+    temperature: string
 }
 
 const NameInput = styled(Input)`
@@ -30,20 +32,23 @@ const AmountInput = styled(Input)`
     width: 80%;
 `
 
+const TEMPERATURE_ICE = 'ICE';
+const TEMPERATURE_HOT = 'HOT';
 export default function AdminMenuRecipeModal(props: PropsType) {
 
     const state = useRef<StateType>(proxy({
         items: [],
         recipeNames: [],
         keyword: '',
-        amount: ''
+        amount: '',
+        temperature: TEMPERATURE_ICE
     })).current
 
     useSnapshot(state, {sync: true})
 
     useEffect(() => {
         if (props.menuId && props.open) {
-            MENU_RECIPE_REPOSITORY.getItems(props.menuId, "ICE")
+            MENU_RECIPE_REPOSITORY.getItems(props.menuId, state.temperature)
                 .then((items: MenuRecipe[]) => {
                     state.items = items
                 })
@@ -52,8 +57,9 @@ export default function AdminMenuRecipeModal(props: PropsType) {
                 });
         } else {
             state.items = []
+            state.temperature = TEMPERATURE_ICE
         }
-    }, [props.menuId, props.open])
+    }, [props.menuId, props.open, state.temperature])
 
     useEffect(() => {
         MENU_RECIPE_REPOSITORY.getNames(state.keyword)
@@ -120,7 +126,8 @@ export default function AdminMenuRecipeModal(props: PropsType) {
 
         MENU_RECIPE_REPOSITORY.save(props.menuId, {
             name: state.keyword,
-            amount: state.amount
+            amount: state.amount,
+            temperature: state.temperature
         })
             .then((recipe: MenuRecipe) => {
                 message.success("레시피가 등록되었습니다.")
@@ -142,15 +149,48 @@ export default function AdminMenuRecipeModal(props: PropsType) {
 
     return <Modal
         {...props}
-        title={'메뉴 레시피 관리'}
+        title={`${props.menuName ? props.menuName : '메뉴 레시피 관리'}`}
         onOk={updateRecipe}
         okText={'수정완료'}
         cancelText={'취소'}
     >
         <Flex gap={5} vertical>
+            <Segmented
+                value={state.temperature}
+                options={[
+                    {
+                        label: (
+                            <Flex gap={10} align={'center'} justify={'center'}>
+                                <Avatar
+                                    style={{
+                                        backgroundColor: '#5fb6ff',
+                                    }}
+                                    icon={<MoonOutlined/>}
+                                />
+                            </Flex>
+                        ),
+                        value: TEMPERATURE_ICE,
+                    },
+                    {
+                        label: (
+                            <Flex gap={10} align={'center'} justify={'center'}>
+                                <Avatar
+                                    style={{
+                                        backgroundColor: '#f56a00',
+                                    }}
+                                    icon={<SunOutlined/>}
+                                />
+                            </Flex>
+                        ),
+                        value: TEMPERATURE_HOT,
+                    },
+                ]}
+                onChange={(value: string) => state.temperature = value}
+                block
+            />
             <Flex gap={5}>
                 <AutoComplete
-                    style={{ width: '100%'}}
+                    style={{width: '100%'}}
                     options={getRecipeNames()}
                     value={state.keyword}
                     onSelect={(keyword) => state.keyword = keyword}
@@ -162,7 +202,8 @@ export default function AdminMenuRecipeModal(props: PropsType) {
                         onChange={e => state.keyword = e.target.value}
                     />
                 </AutoComplete>
-                <AmountInput value={state.amount} size={'large'} placeholder={'수량'} onChange={e => state.amount = e.target.value}/>
+                <AmountInput value={state.amount} size={'large'} placeholder={'수량'}
+                             onChange={e => state.amount = e.target.value}/>
                 <Button size={'large'} onClick={saveRecipe} color={COLORS.headerBackground}>등록</Button>
             </Flex>
             <DragDropContext onDragEnd={onDragEnd}>
@@ -186,10 +227,11 @@ export default function AdminMenuRecipeModal(props: PropsType) {
                                                         <Flex gap={10}>
                                                             <DragOutlined style={{color: '#a1a1a1'}}/>
                                                             {recipe.name}
-                                                            <Divider type={'vertical'} />
+                                                            <Divider type={'vertical'}/>
                                                             {recipe.amount}
                                                         </Flex>
-                                                        <Button onClick={() => deleteRecipe(recipe.id)} icon={<DeleteOutlined style={{color: 'red'}}/>}/>
+                                                        <Button onClick={() => deleteRecipe(recipe.id)}
+                                                                icon={<DeleteOutlined style={{color: 'red'}}/>}/>
                                                     </Flex>
                                                 </Card>
                                             </div>
@@ -203,5 +245,5 @@ export default function AdminMenuRecipeModal(props: PropsType) {
                 </Droppable>
             </DragDropContext>
         </Flex>
-    </Modal>
+    </Modal>;
 };
