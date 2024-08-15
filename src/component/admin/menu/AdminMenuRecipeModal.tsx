@@ -163,7 +163,7 @@ export default function AdminMenuRecipeModal(props: PropsType) {
                             <Flex gap={10} align={'center'} justify={'center'}>
                                 <Avatar
                                     style={{
-                                        backgroundColor: '#5fb6ff',
+                                        backgroundColor: COLORS.ICE,
                                     }}
                                     icon={<MoonOutlined/>}
                                 />
@@ -176,7 +176,7 @@ export default function AdminMenuRecipeModal(props: PropsType) {
                             <Flex gap={10} align={'center'} justify={'center'}>
                                 <Avatar
                                     style={{
-                                        backgroundColor: '#f56a00',
+                                        backgroundColor: COLORS.HOT,
                                     }}
                                     icon={<SunOutlined/>}
                                 />

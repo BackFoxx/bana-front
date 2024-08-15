@@ -7,6 +7,7 @@ import {proxy, useSnapshot} from "valtio";
 import {container} from "tsyringe";
 import MenuRecipeRepository from "@/repository/MenuRecipeItemRepository";
 import MenuRecipe from "@/entity/MenuRecipe";
+import COLORS from "@/styles/Color";
 
 type PropsType = {
     menuId: number | null
@@ -48,7 +49,21 @@ export default function RecipeItemsCard(props: PropsType) {
         } else {
             state.items = []
         }
-    }, [props.menuId, state.temperature])
+    }, [props.menuId])
+
+    useEffect(() => {
+        if (props.menuId) {
+            MENU_RECIPE_REPOSITORY.getItems(props.menuId, state.temperature)
+                .then((items: MenuRecipe[]) => {
+                    state.items = items
+                })
+                .catch((e) => {
+                    console.log(e)
+                });
+        } else {
+            state.items = []
+        }
+    }, [state.temperature])
 
     return (
         <>
@@ -61,7 +76,7 @@ export default function RecipeItemsCard(props: PropsType) {
                             <Flex gap={10} align={'center'} justify={'center'}>
                                 <Avatar
                                     style={{
-                                        backgroundColor: '#5fb6ff',
+                                        backgroundColor: COLORS.ICE,
                                     }}
                                     icon={<MoonOutlined/>}
                                 />
@@ -74,7 +89,7 @@ export default function RecipeItemsCard(props: PropsType) {
                             <Flex gap={10} align={'center'} justify={'center'}>
                                 <Avatar
                                     style={{
-                                        backgroundColor: '#f56a00',
+                                        backgroundColor: COLORS.HOT,
                                     }}
                                     icon={<SunOutlined/>}
                                 />

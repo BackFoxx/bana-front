@@ -21,7 +21,7 @@ export default function TopSearchMenuCard(props: PropsType) {
         menus: []
     })).current
 
-    useSnapshot(state, { sync: true })
+    useSnapshot(state, {sync: true})
 
     useEffect(() => {
         MENU_REPOSITORY.getMostSearchedMenus()
@@ -36,13 +36,15 @@ export default function TopSearchMenuCard(props: PropsType) {
     return <>
         <Card>
             <Paragraph>가장 많이 검색한 메뉴</Paragraph>
-            {state.menus.map(menu => <Card key={menu.id} onClick={() => props.onMenuClick(menu.id)}>
-                <Flex align={'center'} justify={'space-between'}>
-                    <Paragraph>{menu.title}</Paragraph>
-                    <Divider type={'vertical'} />
-                    <Paragraph>{menu.searchCount}회</Paragraph>
-                </Flex>
-            </Card>)}
+            <Flex gap={5} vertical>
+                {state.menus.map(menu => <Card key={menu.id} onClick={() => props.onMenuClick(menu.id)}>
+                    <Flex align={'center'} justify={'space-between'}>
+                        <Paragraph>{menu.title}</Paragraph>
+                        <Divider type={'vertical'}/>
+                        <Paragraph>{menu.searchCount}회</Paragraph>
+                    </Flex>
+                </Card>)}
+            </Flex>
         </Card>
     </>
 };

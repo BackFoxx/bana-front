@@ -30,4 +30,8 @@ export default class MenuRecipeItemRepository {
     public getNames(keyword: string): Promise<string[]> {
         return this.axiosClient.get(`/api/v1/recipes/names`, {keyword: keyword}, String);
     }
+
+    public getAmounts(amount: string) {
+        return this.axiosClient.get(`/api/v1/recipes/amounts`, {amount: amount}, String);
+    }
 };
