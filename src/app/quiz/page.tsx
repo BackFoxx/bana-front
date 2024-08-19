@@ -1,7 +1,7 @@
 'use client'
 
 import 'reflect-metadata';
-import {Breadcrumb, Card, Divider, Flex, message, Typography} from "antd";
+import {Breadcrumb, Card, Divider, Flex, Image, message, Typography} from "antd";
 import {container} from "tsyringe";
 import Quiz from "@/entity/Quiz";
 import React, {useEffect, useRef} from "react";
@@ -74,7 +74,8 @@ export default function Page() {
             <Title level={4}><SmileOutlined/> 퀴즈 <SmileOutlined/></Title>
         </Flex>
         <Card>
-            <Flex align={'center'} justify={'center'}>
+            <Flex align={'center'} justify={'center'} vertical>
+                <Image width={'50%'} src={state.quiz.menu.image} />
                 <Typography.Text style={{color: state.quiz.isIce() ? COLORS.ICE : COLORS.HOT}}
                                  strong>{state.quiz.getTemperature()} {state.quiz.menu.title}</Typography.Text>의 레시피를
                 맞추어보자
