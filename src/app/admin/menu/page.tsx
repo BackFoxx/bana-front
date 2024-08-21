@@ -13,6 +13,7 @@ import AdminMenuKeywordModal from "@/component/admin/menu/AdminMenuKeywordModal"
 import COLORS from "@/styles/Color";
 import AdminMenuRecipeModal from "@/component/admin/menu/AdminMenuRecipeModal";
 import MenuImageCard from "@/component/admin/menu/MenuImageCard";
+import Title from "antd/lib/typography/Title";
 
 const MENU_REPOSITORY = container.resolve(MenuRepository)
 
@@ -108,6 +109,7 @@ export default function Page() {
     }
 
     return <>
+        <Title level={4}>메뉴 관리</Title>
         <Flex gap={5} vertical>
             <Flex gap={5}>
                 <Input value={state.menu.name} size={'large'} onChange={e => state.menu.name = e.target.value}/>

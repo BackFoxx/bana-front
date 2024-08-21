@@ -29,7 +29,8 @@ export default function Header() {
     const router = useRouter();
 
     const items: MenuProps['items'] = [
-        { key: '1', label: <a target={"_blank"} onClick={() => router.push(`/admin/menu`)}>메뉴</a>  }
+        { key: '1', label: <a target={"_blank"} onClick={() => router.push(`/admin/menu`)}>메뉴</a>  },
+        { key: '2', label: <a target={"_blank"} onClick={() => router.push(`/admin/group`)}>그룹</a>  }
     ]
 
     return <Flex style={headerStyle} justify={'end'}>

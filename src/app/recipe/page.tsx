@@ -1,7 +1,7 @@
 'use client'
 
 import 'reflect-metadata';
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {proxy, useSnapshot} from "valtio";
 import {AutoComplete, Button, Flex, Input, message} from "antd";
 import styled from "@emotion/styled";
