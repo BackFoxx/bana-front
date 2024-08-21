@@ -5,6 +5,7 @@ import Header from "@/component/Header";
 import {Content} from "antd/lib/layout/layout";
 import COLORS from "@/styles/Color";
 import {ConfigProvider} from "antd";
+import {Suspense} from "react";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -21,21 +22,23 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body className={inter.className}>
-        <ConfigProvider
-            theme={{
-                token: {
-                    colorPrimary: COLORS.headerBackground,
-                }
-            }}
-        >
-            <Header/>
-            <Content style={{
-                width: '80%',
-                margin: 'auto'
-            }}>
-                {children}
-            </Content>
-        </ConfigProvider>
+        <Suspense>
+            <ConfigProvider
+                theme={{
+                    token: {
+                        colorPrimary: COLORS.headerBackground,
+                    }
+                }}
+            >
+                <Header/>
+                <Content style={{
+                    width: '80%',
+                    margin: 'auto'
+                }}>
+                    {children}
+                </Content>
+            </ConfigProvider>
+        </Suspense>
         </body>
         </html>
     );
