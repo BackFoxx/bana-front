@@ -18,6 +18,7 @@ const headerStyle: React.CSSProperties = {
 
 const menus = [
     {key: "recipe", label: "레시피"},
+    {key: "group-quiz", label: "그룹퀴즈"},
     {key: "quiz", label: "퀴즈"}
 ]
 
@@ -33,25 +34,27 @@ export default function Header() {
         { key: '2', label: <a target={"_blank"} onClick={() => router.push(`/admin/group`)}>그룹</a>  }
     ]
 
-    return <Flex style={headerStyle} justify={'end'}>
+    return <Flex style={headerStyle} justify={'space-between'} align={'center'}>
         <MehOutlined onClick={() => router.push(`/`)} />
-        <Menu
-            selectable={false}
-            onClick={onMenuClick}
-            mode="horizontal"
-            items={menus}
-            style={{
-                marginLeft: 'auto',
-                backgroundColor: COLORS.headerBackground
-            }}
-        />
-        <Dropdown
-            menu={{items}}
-        >
-            <Button
-                onClick={e => e.preventDefault()}
-                icon={<AndroidOutlined/>}
+        <Flex align={'center'}>
+            <Menu
+                selectable={false}
+                onClick={onMenuClick}
+                mode="horizontal"
+                items={menus}
+                style={{
+                    backgroundColor: COLORS.headerBackground,
+                    width: '210px'
+                }}
             />
-        </Dropdown>
+            <Dropdown
+                menu={{items}}
+            >
+                <Button
+                    onClick={e => e.preventDefault()}
+                    icon={<AndroidOutlined/>}
+                />
+            </Dropdown>
+        </Flex>
     </Flex>;
 };

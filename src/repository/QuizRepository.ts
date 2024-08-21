@@ -10,7 +10,8 @@ export default class QuizRepository {
         this.axiosClient = axiosClient;
     }
 
-    public getQuiz(): Promise<Quiz> {
-        return this.axiosClient.get(`/api/v1/quiz/problem`, null, Quiz);
+    public getQuiz(groupId: number | null = null): Promise<Quiz> {
+        const params = groupId ? {groupId: groupId} : null;
+        return this.axiosClient.get(`/api/v1/quiz/problem`, params, Quiz);
     }
 };

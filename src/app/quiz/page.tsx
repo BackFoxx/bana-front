@@ -11,6 +11,7 @@ import {SmileOutlined} from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import COLORS from "@/styles/Color";
 import QuizOption from "@/entity/QuizOption";
+import {useSearchParams} from "next/navigation";
 
 type StateType = {
     quiz: Quiz
@@ -35,15 +36,25 @@ export default function Page() {
         },
     })).current
 
-
     useSnapshot(state, {sync: true})
 
-    function getQuiz() {
-        QUIZ_REPOSITORY.getQuiz()
-            .then((quiz) => state.quiz = quiz)
-            .catch((e) => console.log(e))
+    const params = useSearchParams();
 
-        state.answer.index = 0
+    function getQuiz() {
+        const groupId = params.get("groupId");
+        console.log(' >>>>>>> ', groupId)
+
+        if (groupId === null) {
+            QUIZ_REPOSITORY.getQuiz()
+                .then((quiz) => state.quiz = quiz)
+                .catch((e) => console.log(e));
+        } else {
+            QUIZ_REPOSITORY.getQuiz(+groupId)
+                .then((quiz) => state.quiz = quiz)
+                .catch((e) => console.log(e));
+        }
+
+        state.answer.index = 0;
         state.answer.items = []
     }
 
